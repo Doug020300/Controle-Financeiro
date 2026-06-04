@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle Financeiro Pessoal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 40px 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        /* Grid dos Cards de Resumo */
+        .resumo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+        }
+        .card h3 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .card .valor {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+        }
+        .saldo-positivo { color: #10b981; }
+        .saldo-negativo { color: #ef4444; }
+        .valor-entrada { color: #10b981; }
+        .valor-saida { color: #ef4444; }
+
+        /* Estilo da Seção de Formulário */
+        .form-box {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 30px;
+        }
+        .form-box h2 {
+            font-size: 20px;
+            margin: 0 0 20px 0;
+            color: #1e293b;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #64748b;
+        }
+        .form-group input, .form-group select {
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            font-family: inherit;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #44b78b;
+        }
+        .btn-salvar {
+            background-color: #44b78b;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            font-family: inherit;
+            transition: background 0.2s;
+        }
+        .btn-salvar:hover {
+            background-color: #369b74;
+        }
+
+        /* Lista de Transações */
+        .historico-box {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+        }
+        .historico-box h2 {
+            font-size: 20px;
+            margin: 0 0 20px 0;
+            color: #1e293b;
+        }
+        .lista-transacoes {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .transacao-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border-left: 5px solid #cbd5e1;
+        }
+        .transacao-item.entrada { border-left-color: #10b981; }
+        .transacao-item.saida { border-left-color: #ef4444; }
+        
+        .info-esquerda h4 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            color: #1e293b;
+        }
+        .info-esquerda span {
+            font-size: 12px;
+            color: #64748b;
+            background: #e2e8f0;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-right: 8px;
+        }
+        .info-esquerda .data {
+            background: none;
+            padding: 0;
+            color: #94a3b8;
+        }
+        .valor-final {
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .sem-transacao {
+            text-align: center;
+            color: #64748b;
+            padding: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Meu Controle Financeiro 💰</h1>
+
+        <!-- Cards de Resumo -->
+        <div class="resumo-grid">
+            <div class="card">
+                <h3>Saldo Atual</h3>
+                <p class="valor {% if saldo >= 0 %}saldo-positivo{% else %}saldo-negativo{% endif %}">
+                    R$ {{ saldo }}
+                </p>
+            </div>
+            <div class="card">
+                <h3>Total Entradas</h3>
+                <p class="valor valor-entrada">R$ {{ total_entradas }}</p>
+            </div>
+            <div class="card">
+                <h3>Total Saídas</h3>
+                <p class="valor valor-saida">R$ {{ total_saidas }}</p>
+            </div>
+        </div>
+
+        <!-- Seção do Novo Formulário de Cadastro -->
+        <div class="form-box">
+            <h2>Nova Movimentação</h2>
+            <form method="POST">
+                {% csrf_token %} <!-- Chave de segurança obrigatória do Django -->
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="descricao">Descrição</label>
+                        <input type="text" name="descricao" id="descricao" placeholder="Ex: Supermercado" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="valor">Valor (R$)</label>
+                        <input type="number" name="valor" id="valor" step="0.01" min="0.01" placeholder="0.00" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipo">Tipo</label>
+                        <select name="tipo" id="tipo" required>
+                            <option value="ENTRADA">Entrada</option>
+                            <option value="SAIDA">Saída</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="categoria">Categoria</label>
+                        <input type="text" name="categoria" id="categoria" placeholder="Ex: Alimentação" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data">Data</label>
+                        <input type="date" name="data" id="data" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-salvar">Adicionar Movimentação</button>
+            </form>
+        </div>
+
+        <!-- Lista de Movimentações -->
+        <div class="historico-box">
+            <h2>Histórico de Movimentações</h2>
+            <div class="lista-transacoes">
+                {% for transacao in transacoes %}
+                    <div class="transacao-item {% if transacao.tipo == 'ENTRADA' %}entrada{% else %}saida{% endif %}">
+                        <div class="info-esquerda">
+                            <h4>{{ transacao.descricao }}</h4>
+                            <span>{{ transacao.categoria }}</span>
+                            <span class="data">{{ transacao.data|date:"d/m/Y" }}</span>
+                        </div>
+                        <div class="valor-final {% if transacao.tipo == 'ENTRADA' %}valor-entrada{% else %}valor-saida{% endif %}">
+                            {% if transacao.tipo == 'ENTRADA' %}+{% else %}-{% endif %} R$ {{ transacao.valor }}
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="sem-transacao">Nenhuma transação cadastrada ainda!</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,17 @@
+# Banco de dados local
+db.sqlite3
+
+# Pastas geradas automaticamente pelo Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Arquivos de ambiente e segredos
+.env
+
+# Pasta de arquivos estáticos gerada pelo Django
+staticfiles/
+
+# Ambientes virtuais
+.venv/
+.virtualenvs/
