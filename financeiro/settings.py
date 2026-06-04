@@ -24,9 +24,11 @@ import os
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'chave-local-insegura-apenas-para-dev')
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1').split(',')
-
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    'controle-financeiro-production-5c6d.up.railway.app',
+]
 
 
 # Application definition
